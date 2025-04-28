@@ -22,7 +22,7 @@
 %\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, positioning, arrows.meta}
 \usepackage[bottom]{footmisc}  % fix footnotes at the bottom of the page
 \usepackage{hyperref}
-\usepackage[a4paper, margin=1cm]{geometry}
+\usepackage[a4paper, margin=2cm]{geometry}
 %\usepackage[toc, section=section]{glossaries}
 \usepackage[all]{hypcap}  % needed to help hyperlinks direct correctly
 
@@ -31,6 +31,7 @@
     colorlinks=true, %set true if you want colored links
     linktoc=all,     %set to all if you want both sections and subsections linked
     linkcolor=black, %choose some color if you want links to stand out
+    citecolor=black,
 }
 
 % typewriter font
@@ -80,7 +81,7 @@
     2024-2025 Spring
     \begin{center}
         \Large
-        \textbf{IE 554 Project -- Mathematical Models}
+        \textbf{IE 554 Project -- Proposal}
         \\[4mm]
         \normalsize
         \hfill \textsl{Emek Irmak \& Ömer Turan Şahinaslan}
@@ -112,7 +113,7 @@ Since dominator partitions were introduced, most studies have been about their p
 However, \textbf{no one has formulated the dominator partition problem using an integer programming model before}, to our knowledge. The existing work is mostly theoretical, without optimization models. So, our study brings a new angle by using integer programming to find dominator partitions.
 
 
-\input{contents/model.tex}
+\input{../model/contents/model.tex}
 
 \section{Planned Contributions}
 \begin{itemize}[leftmargin=*, noitemsep]
@@ -130,7 +131,7 @@ However, \textbf{no one has formulated the dominator partition problem using an 
 The Dominator Coloring Problem is a challenging area within graph optimization. By formulating the problem as an integer program and analyzing its properties through computational experiments, we aim to provide a new and valuable perspective for solving and understanding dominator colorings.
 
 
-
+\clearpage
 \bibliographystyle{plain}
 \begin{thebibliography}{9}
 
