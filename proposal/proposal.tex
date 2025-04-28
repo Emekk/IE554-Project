@@ -95,11 +95,14 @@
 
 \section{Introduction}
 
-Graph partitioning problems are very important in optimization because they appear a lot in practical applications like network design, clustering, and parallel computing. In this study, we work on the \emph{dominator partition problem}, which was introduced recently by Cockayne, Hedetniemi, Laskar, McRae, and Wallis \cite{dominator_partitions}.
+Graph partitioning problems are fundamental in combinatorial optimization and graph theory, offering a wide range of applications from network design to clustering. In this project, we focus on a novel variant called the \textbf{Dominator Partition Problem}, recently introduced in the literature by Hedetniemi and Haynes (2006) \cite{dominator_partitions}. We propose integer programming formulation for the problem and try to improve it. 
 
-A \textbf{dominator partition} of a graph $G = (V,E)$ is basically a partition $\pi = \{V_1, V_2, \dots, V_k\}$ of $V$ such that every vertex $v \in V$ dominates at least one block $V_i$; meaning that $v$ is adjacent to every vertex in $V_i$. The goal is to find the \textbf{dominator partition number} $\pi_d(G)$, which is the minimum number of blocks needed.
+\section{Problem Definition}
 
-For this project, we propose an \textbf{integer programming model} to solve the dominator partition problem exactly. Also, one of our aims is to make the model stronger such that it can be solved faster on bigger graphs.
+Given a graph $G = (V, E)$, a vertex $v \in V$ \textit{dominates} a set $S \subseteq V$ if $v$ is adjacent to every vertex in $S$. A \textbf{dominator partition} $\pi = \{V_1, V_2, \dots, V_k\}$ of $V$ is a partition such that each vertex $v \in V$ dominates at least one block $V_i$ in the partition. The \textit{dominator partition number} $\pi_d(G)$ is the minimum number $k$ such that $G$ has a dominator partition of order $k$, and our goal is to find it.
+
+
+For this project, we propose an \textbf{integer programming model} to solve the dominator partition problem exactly. Then, we try to improve the formulation such as making the model stronger such that it can be solved faster on bigger graphs.
 
 The study process goes like this: first we tried to model the problem mathematically using integer programming. Then we plan to work on improving the model, mainly by adding valid inequalities. Maybe later we will find other ways to solve the problem and compare those methods with our original model. Also, after fixing the value of $k$, we want to try different formulations and compare their runtime performances.
 
@@ -107,22 +110,31 @@ The study process goes like this: first we tried to model the problem mathematic
 
 Since dominator partitions were introduced, most studies have been about their properties, complexity and special graph classes like trees and cycles \cite{dominator_partitions}. It was shown that checking if a graph has a dominator partition with at most $k$ blocks is NP-complete, even when the graph is bipartite, planar, or chordal.
 
-However, \textbf{no one has formulated the dominator partition problem using an integer programming model before, as far as we know}. The existing work is mostly theoretical, without optimization models. So, our study brings a new angle by using integer programming to find dominator partitions.
+However, \textbf{no one has formulated the dominator partition problem using an integer programming model before}, to our knowledge. The existing work is mostly theoretical, without optimization models. So, our study brings a new angle by using integer programming to find dominator partitions.
 
 \clearpage
 
 \input{../model/contents/model.tex}
 
-
-\section{Future Work}
-
-Some ideas for future work:
-\begin{itemize}[label=--]
-    \item \textbf{Valid Inequalities:} Add valid inequalities to the model to make it stronger and speed up the solution.
-    \item \textbf{Comparative Analysis:} Compare the computation times of the basic model vs. the strengthened model on different types of graphs.
-    \item \textbf{Alternative Formulations:} If $k$ is known, design a new IP model and compare its runtime and performance.
-
+\section{Planned Contributions}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item \textbf{Exact Modeling}: We provide the first known exact integer programming model for the dominator coloring problem.
+    \item \textbf{Model Strengthening}: We aim to derive \textit{valid inequalities} to strengthen the above formulation.
+    \item \textbf{Computational Comparisons}: We will perform computational experiments on different graph sizes (small, medium, large) to:
+    \begin{itemize}[noitemsep]
+        \item Compare the \textbf{original model} and \textbf{strengthened model}.
+        \item Analyze improvements in \textbf{computational time} and \textbf{solver performance}.
+    \end{itemize}
+    \item \textbf{New Formulation Development}: Optionally, we may propose a \textbf{new mathematical model} based on alternative representations (e.g., alternative graph properties) and compare it against the original one in terms of both \textbf{formulation strength} and \textbf{computational efficiency}.
 \end{itemize}
+
+\section{Conclusion}
+The Dominator Partition Problem is a recently introduced, yet still largely unexplored optimization problem with rich mathematical structure. Through developing mathematical formulations, strengthening them with valid inequalities, and performing extensive computational experiments, we aim to significantly contribute to the understanding and solution of this problem.
+
+
+\section{Conclusion}
+The Dominator Partition Problem is a recently introduced, yet still largely unexplored optimization problem with rich mathematical structure. Through developing mathematical formulations, strengthening them with valid inequalities, and performing extensive computational experiments, we aim to significantly contribute to the understanding and solution of this problem.
+
 
 \clearpage
 \bibliographystyle{plain}
