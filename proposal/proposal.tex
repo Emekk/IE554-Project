@@ -1,0 +1,134 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[autostyle]{csquotes}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage{romannum}
+\usepackage{calligra} % handwritten font
+%\usepackage{newtxtext} % For text font
+\usepackage{newtxmath}
+\usepackage{float}
+%\usepackage{pdfpages}
+\usepackage{pifont}
+\usepackage{setspace}
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}
+\usepackage{tcolorbox}
+\usepackage{multicol}
+%\usepackage{pgfplots}  % matplotlib plots
+%\usepackage{tikz}
+%\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, positioning, arrows.meta}
+\usepackage[bottom]{footmisc}  % fix footnotes at the bottom of the page
+\usepackage{hyperref}
+\usepackage[a4paper, margin=1cm]{geometry}
+%\usepackage[toc, section=section]{glossaries}
+\usepackage[all]{hypcap}  % needed to help hyperlinks direct correctly
+
+% hyperlinks
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=black, %choose some color if you want links to stand out
+}
+
+% typewriter font
+\renewcommand{\ttdefault}{cmvtt}
+
+% table of contents
+\renewcommand\contentsname{CONTENTS}
+\setcounter{tocdepth}{3}
+
+% custom section commands
+%\newcommand\subsectiontoc[1]{
+%    \subsection*{\underline{#1}}
+%    \addcontentsline{toc}{subsection}{#1}
+%    \markboth{#1}{#1}}
+%\newcommand\subsubsectiontoc[1]{
+%    \subsubsection*{\underline{#1}}
+%    \addcontentsline{toc}{subsubsection}{#1}
+%    \markboth{#1}{#1}}
+
+% letter subsections
+%\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+% line spacing
+\setstretch{1.5}
+\renewcommand{\arraystretch}{1.5} % table row spacing
+
+% footnote
+\setlength{\skip\footins}{1.5cm}
+\setlength{\footnotesep}{0.6cm}
+\makeatletter
+\renewcommand\@makefntext[1]{\noindent\makebox[12pt][r]{\@thefnmark. }#1}
+
+% glossary
+%\input{glossary/glossary.tex}
+
+% tikz styles
+%\tikzstyle{startstop} = [rectangle, rounded corners=4mm, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=white]
+%\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=white]
+%\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=white]
+%\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, aspect=1.75, text centered, draw=black, fill=white]
+%\tikzstyle{arrow} = [thick, ->, >=latex]
+
+
+\begin{document}
+
+\begin{tcolorbox}[colback=white, bottomrule=1mm, sharp corners]
+    2024-2025 Spring
+    \begin{center}
+        \Large
+        \textbf{IE 554 Project -- Mathematical Models}
+        \\[4mm]
+        \normalsize
+        \hfill \textsl{Emek Irmak \& Ömer Turan Şahinaslan}
+    \end{center}
+\end{tcolorbox}
+
+\pagenumbering{gobble}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+Graph partitioning problems are very important in optimization because they appear a lot in practical applications like network design, clustering, and parallel computing. In this study, we work on the \emph{dominator partition problem}, which was introduced recently by Cockayne, Hedetniemi, Laskar, McRae, and Wallis \cite{dominator_partitions}.
+
+A \textbf{dominator partition} of a graph $G = (V,E)$ is basically a partition $\pi = \{V_1, V_2, \dots, V_k\}$ of $V$ such that every vertex $v \in V$ dominates at least one block $V_i$; meaning that $v$ is adjacent to every vertex in $V_i$. The goal is to find the \textbf{dominator partition number} $\pi_d(G)$, which is the minimum number of blocks needed.
+
+For this project, we propose an \textbf{integer programming model} to solve the dominator partition problem exactly. Also, one of our aims is to make the model stronger such that it can be solved faster on bigger graphs.
+
+The study process goes like this: first we tried to model the problem mathematically using integer programming. Then we plan to work on improving the model, mainly by adding valid inequalities. Maybe later we will find other ways to solve the problem and compare those methods with our original model. Also, after fixing the value of $k$, we want to try different formulations and compare their runtime performances.
+
+\section{Literature Review}
+
+Since dominator partitions were introduced, most studies have been about their properties, complexity and special graph classes like trees and cycles \cite{dominator_partitions}. It was shown that checking if a graph has a dominator partition with at most $k$ blocks is NP-complete, even when the graph is bipartite, planar, or chordal.
+
+However, \textbf{no one has formulated the dominator partition problem using an integer programming model before, as far as we know}. The existing work is mostly theoretical, without optimization models. So, our study brings a new angle by using integer programming to find dominator partitions.
+
+
+\input{contents/model.tex}
+
+
+\section{Future Work}
+
+Some ideas for future work:
+\begin{itemize}[label=--]
+    \item \textbf{Valid Inequalities:} Add valid inequalities to the model to make it stronger and speed up the solution.
+    \item \textbf{Comparative Analysis:} Compare the computation times of the basic model vs. the strengthened model on different types of graphs.
+    \item \textbf{Alternative Formulations:} If $k$ is known, design a new IP model and compare its runtime and performance.
+
+\end{itemize}
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+
+\bibitem{dominator_partitions}
+S. M. Hedetniemi, S. T. Hedetniemi, R. Laskar, A. A. McRae, C. K. Wallis,
+\textit{Dominator Partitions of Graphs}, 2008.
+
+\end{thebibliography}
+
+\end{document}
