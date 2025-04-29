@@ -22,7 +22,7 @@
 %\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, positioning, arrows.meta}
 \usepackage[bottom]{footmisc}  % fix footnotes at the bottom of the page
 \usepackage{hyperref}
-\usepackage[a4paper, margin=1.5cm]{geometry}
+\usepackage[a4paper, margin=1cm]{geometry}
 %\usepackage[toc, section=section]{glossaries}
 \usepackage[all]{hypcap}  % needed to help hyperlinks direct correctly
 
@@ -34,117 +34,60 @@
     citecolor=black,
 }
 
-% typewriter font
-\renewcommand{\ttdefault}{cmvtt}
-
 % table of contents
 \renewcommand\contentsname{CONTENTS}
-\setcounter{tocdepth}{3}
 
-% custom section commands
-%\newcommand\subsectiontoc[1]{
-%    \subsection*{\underline{#1}}
-%    \addcontentsline{toc}{subsection}{#1}
-%    \markboth{#1}{#1}}
-%\newcommand\subsubsectiontoc[1]{
-%    \subsubsection*{\underline{#1}}
-%    \addcontentsline{toc}{subsubsection}{#1}
-%    \markboth{#1}{#1}}
-
-% letter subsections
-%\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
-
-% line spacing
-\setstretch{1.5}
-\renewcommand{\arraystretch}{1.5} % table row spacing
-
-% footnote
-\setlength{\skip\footins}{1.5cm}
-\setlength{\footnotesep}{0.6cm}
-\makeatletter
-\renewcommand\@makefntext[1]{\noindent\makebox[12pt][r]{\@thefnmark. }#1}
-
-% glossary
-%\input{glossary/glossary.tex}
-
-% tikz styles
-%\tikzstyle{startstop} = [rectangle, rounded corners=4mm, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=white]
-%\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=white]
-%\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=white]
-%\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, aspect=1.75, text centered, draw=black, fill=white]
-%\tikzstyle{arrow} = [thick, ->, >=latex]
-
+\setstretch{1.1}
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{0pt}
 
 \begin{document}
-
-\begin{tcolorbox}[colback=white, bottomrule=1mm, sharp corners]
-    2024-2025 Spring
-    \begin{center}
-        \Large
-        \textbf{IE 554 Project -- Proposal}
-        \\[4mm]
-        \normalsize
-        \hfill \textsl{Emek Irmak \& Ömer Turan Şahinaslan}
-    \end{center}
-\end{tcolorbox}
-
 \pagenumbering{gobble}
-\tableofcontents
-\clearpage
-\pagenumbering{arabic}
 
-\section{Introduction}
+\begin{center}
+    \Large \textbf{IE 554 Project Proposal} \\
+    \normalsize \textsl{Emek Irmak \& Ömer Turan Şahinaslan}
+\end{center}
 
-Graph partitioning problems are fundamental in combinatorial optimization and graph theory, offering a wide range of applications from network design to clustering. In this project, we focus on a novel variant called the \textbf{Dominator Partition Problem}, recently introduced in the literature by Hedetniemi and Haynes (2006) \cite{dominator_partitions}. We propose integer programming formulation for the problem and try to improve it. 
+\textbf{\large Problem Description}
+\vspace*{-2mm}
 
-\section{Problem Definition}
+\paragraph{} Graph partitioning is a key topic in optimization. We study the \textbf{Dominator Partition Problem}, introduced by Hedetniemi and Haynes (2006) \cite{dominator_partitions}, and propose an exact integer programming model with potential improvements for scalability.
 
-Given a graph $G = (V, E)$, a vertex $v \in V$ \textit{dominates} a set $S \subseteq V$ if $v$ is adjacent to every vertex in $S$. A \textbf{dominator partition} $\pi = \{V_1, V_2, \dots, V_k\}$ of $V$ is a partition such that each vertex $v \in V$ dominates at least one block $V_i$ in the partition. The \textit{dominator partition number} $\pi_d(G)$ is the minimum number $k$ such that $G$ has a dominator partition of order $k$, and our goal is to find it.
+\paragraph{} In graph $G = (V, E)$, a vertex $v$ \textit{dominates} set $S \subseteq V$ if it's adjacent to all $u \in S$. A \textbf{dominator partition} divides $V$ into $k$ blocks, each dominated by some $v \in V$. The goal is to find the smallest such $k$, called $\pi_d(G)$.
 
+\vspace{5mm}
 
-For this project, we propose an \textbf{integer programming model} to solve the dominator partition problem exactly. Then, we try to improve the formulation such as making the model stronger such that it can be solved faster on bigger graphs.
+\textbf{\large Our Plan}
+\vspace*{-2mm}
 
-The study process goes like this: first we tried to model the problem mathematically using integer programming. Then we plan to work on improving the model, mainly by adding valid inequalities. Maybe later we will find other ways to solve the problem and compare those methods with our original model. Also, after fixing the value of $k$, we want to try different formulations and compare their runtime performances.
+\paragraph{} We gave the following IP model for the dominator partition problem for a fixed $k$:
 
-\section{Literature Review}
-
-Since dominator partitions were introduced, most studies have been about their properties, complexity and special graph classes like trees and cycles \cite{dominator_partitions}. It was shown that checking if a graph has a dominator partition with at most $k$ blocks is NP-complete, even when the graph is bipartite, planar, or chordal.
-
-However, \textbf{no one has formulated the dominator partition problem using an integer programming model before}, to our knowledge. The existing work is mostly theoretical, without optimization models. So, our study brings a new angle by using integer programming to find dominator partitions.
-
-\clearpage
-
-\section{Mathematical Formulation}
-\scalebox{0.8}{%
+\hspace{4mm}
+\scalebox{0.95}{%
   \parbox{\linewidth}{%
     \input{model.tex}%
   }%
 }
 
-\section{Planned Contributions}
-\begin{itemize}[leftmargin=*, noitemsep]
-    \item \textbf{Exact Modeling}: We provide the first known exact integer programming model for the dominator coloring problem.
-    \item \textbf{Model Strengthening}: We aim to derive \textit{valid inequalities} to strengthen the above formulation.
-    \item \textbf{Computational Comparisons}: We will perform computational experiments on different graph sizes (small, medium, large) to:
-    \begin{itemize}[noitemsep]
-        \item Compare the \textbf{original model} and \textbf{strengthened model}.
-        \item Analyze improvements in \textbf{computational time} and \textbf{solver performance}.
-    \end{itemize}
-    \item \textbf{New Formulation Development}: Optionally, we may propose a \textbf{new mathematical model} by fixing $k$ and analyze it.
+\vspace{-6mm}
+\paragraph{} The planned contributions are:
+\begin{itemize}[label=, itemsep=0pt]
+    \item \textbf{Exact IP Model}: First IP formulation for dominator partitioning.
+    \item \textbf{Model Strengthening}: Add valid inequalities.
+    \item \textbf{Experiments}: Compare original vs. improved models on graphs of various sizes.
 \end{itemize}
 
-\section{Conclusion}
-The Dominator Partition Problem is a recently introduced, yet still largely unexplored optimization problem with rich mathematical structure. Through developing mathematical formulations, strengthening them with valid inequalities, and performing extensive computational experiments, we aim to significantly contribute to the understanding and solution of this problem.
+\textbf{\large Literature Review}
+\vspace*{-2mm}
 
+\paragraph{} Most existing work is theoretical, focused on complexity and special graph classes \cite{dominator_partitions}. Determining $\pi_d(G)$ is NP-complete, but no exact IP formulation exists in prior literature. Our study fills this gap.
 
-\clearpage
+\small
 \bibliographystyle{plain}
 \begin{thebibliography}{9}
-
 \bibitem{dominator_partitions}
-S. M. Hedetniemi, S. T. Hedetniemi, R. Laskar, A. A. McRae, C. K. Wallis,
-\textit{Dominator Partitions of Graphs}, 2008.
-
+S. M. Hedetniemi et al., \textit{Dominator Partitions of Graphs}, 2008.
 \end{thebibliography}
 
 \end{document}
