@@ -22,7 +22,7 @@
 %\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, positioning, arrows.meta}
 \usepackage[bottom]{footmisc}  % fix footnotes at the bottom of the page
 \usepackage{hyperref}
-\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage[a4paper, margin=1.5cm]{geometry}
 %\usepackage[toc, section=section]{glossaries}
 \usepackage[all]{hypcap}  % needed to help hyperlinks direct correctly
 
@@ -114,7 +114,12 @@ However, \textbf{no one has formulated the dominator partition problem using an 
 
 \clearpage
 
-\input{../model/contents/model.tex}
+\section{Mathematical Formulation}
+\scalebox{0.8}{%
+  \parbox{\linewidth}{%
+    \input{model.tex}%
+  }%
+}
 
 \section{Planned Contributions}
 \begin{itemize}[leftmargin=*, noitemsep]
