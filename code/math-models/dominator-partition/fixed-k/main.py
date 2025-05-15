@@ -2,14 +2,15 @@ import gurobipy as gp
 from gurobipy import GRB
 import numpy as np
 import os
-from sample_graphs import bipartite_5
+from sample_graphs import *
+from draw_graph import draw_graph
 
 
 # Adjacency matrix (from your graph)
-a_vu = bipartite_5
+a_vu = random_graph
 
 n = a_vu.shape[0]  # Number of vertices
-k = 4  # Number of blocks (fixed)
+k = 7  # Number of blocks (fixed)
 
 # Model
 m = gp.Model('dominator-partition-fixed-k')
@@ -50,13 +51,17 @@ m.optimize()
 
 # display solution
 script_dir = os.path.dirname(os.path.abspath(__file__))
+partitions = []
 with open(f"{script_dir}/solution.txt", "w", encoding="utf-8") as f:
     if m.status == GRB.OPTIMAL:
         # print decision variables
         for i in range(k):
+            partition = []
             for v in range(n):
                 if x[v, i].X > 0.5:
                     print(f"x[{v}, {i}] = {x[v, i].X}", file=f)
+                    partition.append(v)
+            partitions.append(partition)
         print("---", file=f)
         for v in range(n):
             for i in range(k):
@@ -64,3 +69,4 @@ with open(f"{script_dir}/solution.txt", "w", encoding="utf-8") as f:
                     print(f"d[{v}, {i}] = {d[v, i].X}", file=f)
     else:
         print("No optimal solution found.", file=f)
+draw_graph(a_vu, partitions, separation=10, seed=0)
