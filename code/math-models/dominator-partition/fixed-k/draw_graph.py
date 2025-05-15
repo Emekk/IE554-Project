@@ -8,7 +8,7 @@ from sample_graphs import *
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-def draw_graph(adjacency_matrix, partitions=None, save_path=f"{script_dir}/graph.png", seed=42, separation=None):
+def draw_graph(adjacency_matrix, partitions=None, save_path=f"{script_dir}/graph.png", seed=42, separation=10):
     """
     Draws a graph from an adjacency matrix and optionally colors the nodes based on partitions.
     
@@ -36,3 +36,7 @@ def draw_graph(adjacency_matrix, partitions=None, save_path=f"{script_dir}/graph
 
     plt.title("Graph Visualization")
     plt.savefig(save_path, dpi=300)
+
+
+if __name__ == "__main__":
+    draw_graph(random_graph)

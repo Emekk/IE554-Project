@@ -10,7 +10,7 @@ from draw_graph import draw_graph
 a_vu = random_graph
 
 n = a_vu.shape[0]  # Number of vertices
-k = 7  # Number of blocks (fixed)
+k = 3  # Number of blocks (fixed)
 
 # Model
 m = gp.Model('dominator-partition-fixed-k')
@@ -69,4 +69,4 @@ with open(f"{script_dir}/solution.txt", "w", encoding="utf-8") as f:
                     print(f"d[{v}, {i}] = {d[v, i].X}", file=f)
     else:
         print("No optimal solution found.", file=f)
-draw_graph(a_vu, partitions, separation=10, seed=0)
+draw_graph(a_vu, partitions, seed=0)

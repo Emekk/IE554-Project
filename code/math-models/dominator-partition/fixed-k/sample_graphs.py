@@ -2,17 +2,21 @@ import numpy as np
 
 
 np.random.seed(42)
-random_n = 20
-max_degree = random_n // 5
-min_degree = 1
+random_n = 6
+max_degree = 5
+min_degree = 4
 random_graph = np.zeros((random_n, random_n))
+degrees = {i: 0 for i in range(random_n)}
 for i in range(random_n):
     degree = np.random.randint(min_degree, max_degree + 1)
-    neighbors = np.random.choice(random_n, degree, replace=False)
+    degree = max(0, degree - degrees[i])
+    neighbors = np.random.choice(range(i+1, random_n), min(degree, random_n - i - 1), replace=False)
     for j in neighbors:
-        if i != j:
+        if degrees[j] < max_degree:
             random_graph[i][j] = 1
             random_graph[j][i] = 1
+            degrees[i] += 1
+            degrees[j] += 1
 
 simple_tree_6 = np.array([
     [0, 1, 0, 0, 0, 0],
@@ -53,3 +57,7 @@ bipartite_20 = np.array([
     [0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ])
+
+
+if __name__ == "__main__":
+    print(random_graph)
