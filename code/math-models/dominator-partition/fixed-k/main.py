@@ -2,17 +2,11 @@ import gurobipy as gp
 from gurobipy import GRB
 import numpy as np
 import os
+from sample_graphs import bipartite_5
 
 
 # Adjacency matrix (from your graph)
-a_vu = np.array([
-    [0, 1, 0, 0, 0, 0],
-    [1, 0, 1, 0, 0, 0],
-    [0, 1, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0, 1],
-    [0, 0, 0, 0, 0, 1],
-    [0, 0, 0, 1, 1, 0]
-])
+a_vu = bipartite_5
 
 n = a_vu.shape[0]  # Number of vertices
 k = 4  # Number of blocks (fixed)
