@@ -3,12 +3,12 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import os
-from sample_graphs import *
+from sample_graphs import tree_3
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-def draw_graph(adjacency_matrix, partitions=None, save_path=f"{script_dir}/graph.png", seed=42, separation=10):
+def draw_graph(V, E, partitions=None, save_path=f"{script_dir}/graph.png", seed=42, separation=10):
     """
     Draws a graph from an adjacency matrix and optionally colors the nodes based on partitions.
     
@@ -16,7 +16,9 @@ def draw_graph(adjacency_matrix, partitions=None, save_path=f"{script_dir}/graph
     - adjacency_matrix: 2D numpy array representing the adjacency matrix of the graph.
     - partitions: List of lists, where each sublist contains the indices of nodes in that partition.
     """
-    G = nx.from_numpy_array(adjacency_matrix)
+    G = nx.Graph()
+    G.add_nodes_from(V)
+    G.add_edges_from(E)
 
     pos = nx.spring_layout(G, seed=seed, k=separation)
     if partitions:
@@ -24,8 +26,8 @@ def draw_graph(adjacency_matrix, partitions=None, save_path=f"{script_dir}/graph
         node_labels = np.zeros(len(G.nodes()), dtype=int)
         for label, part in enumerate(partitions):
             for node in part:
-                node_labels[node] = label
-        
+                node_labels[node-1] = label
+
         cmap = cm.get_cmap('tab20', len(partitions))
         node_colors = [cmap(label) for label in node_labels]
 
@@ -39,4 +41,4 @@ def draw_graph(adjacency_matrix, partitions=None, save_path=f"{script_dir}/graph
 
 
 if __name__ == "__main__":
-    draw_graph(random_graph)
+    draw_graph(tree_3[0], tree_3[1])

@@ -2,51 +2,49 @@ import gurobipy as gp
 from gurobipy import GRB
 import numpy as np
 import os
-from sample_graphs import *
+from sample_graphs import tree_3
 from draw_graph import draw_graph
 
 
-# Adjacency matrix (from your graph)
-a_vu = random_graph
+# parameters
+V, E = tree_3
+K = 2
+PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
-n = a_vu.shape[0]  # Number of vertices
-k = 3  # Number of blocks (fixed)
-
-# Model
+# model
 m = gp.Model('dominator-partition-fixed-k')
 
-# Decision variables
-x = m.addVars(n, k, vtype=GRB.BINARY, name="x")  # x[v, i]
-d = m.addVars(n, k, vtype=GRB.BINARY, name="d")  # d[v, i]
+# decision variables
+x = m.addVars(V, PI, vtype=GRB.BINARY, name="x")  # x[v, i]
+d = m.addVars(V, PI, vtype=GRB.BINARY, name="d")  # d[v, i]
 
-# Objective: minimize number of blocks used
+# objective: minimize number of blocks used
 m.setObjective(0, GRB.MINIMIZE)
 
-# Constraints
-
-# Each vertex assigned to exactly one block
-for v in range(n):
-    m.addConstr(gp.quicksum(x[v, i] for i in range(k)) == 1, name=f"Assign_{v}")
+# each vertex assigned to exactly one block
+for v in V:
+    m.addConstr(gp.quicksum(x[v, i] for i in PI) == 1, name=f"Assign_{v}")
 
 # no empty blocks
-for i in range(k):
-    m.addConstr(gp.quicksum(x[v, i] for v in range(n)) >= 1, name=f"NonEmptyBlock_{i}")
+for i in PI:
+    m.addConstr(gp.quicksum(x[v, i] for v in V) >= 1, name=f"NonEmptyBlock_{i}")
 
 # domination condition
-for v in range(n):
-    for u in range(n):
-        for i in range(k):
-            m.addConstr(x[u, i] <= a_vu[v, u] + (1 - d[v, i]), name=f"Dominate_{v}_{u}_{i}")
+for v in V:
+    for u in V:
+        if {v, u} not in E:
+            for i in PI:
+                m.addConstr(x[u, i] + d[v, i] <= 1, name=f"Dominate_{v}_{u}_{i}")
 
 # each vertex dominates at least one block
-for v in range(n):
-    m.addConstr(gp.quicksum(d[v, i] for i in range(k)) >= 1, name=f"DominateBlock_{v}")
+for v in V:
+    m.addConstr(gp.quicksum(d[v, i] for i in PI) >= 1, name=f"DominateBlock_{v}")
 
 # blocks are used in order
-for i in range(k - 1):
-    m.addConstr(gp.quicksum(x[v, i] for v in range(n)) >= gp.quicksum(x[v, i + 1] for v in range(n)), name=f"Order_{i}")
+for i in PI.difference({K}):
+    m.addConstr(gp.quicksum(x[v, i] for v in V) >= gp.quicksum(x[v, i + 1] for v in V), name=f"Order_{i}")
 
-# optimize
+# run the model
 m.optimize()
 
 # display solution
@@ -55,18 +53,18 @@ partitions = []
 with open(f"{script_dir}/solution.txt", "w", encoding="utf-8") as f:
     if m.status == GRB.OPTIMAL:
         # print decision variables
-        for i in range(k):
+        for i in PI:
             partition = []
-            for v in range(n):
+            for v in V:
                 if x[v, i].X > 0.5:
                     print(f"x[{v}, {i}] = {x[v, i].X}", file=f)
                     partition.append(v)
             partitions.append(partition)
         print("---", file=f)
-        for v in range(n):
-            for i in range(k):
+        for v in V:
+            for i in PI:
                 if d[v, i].X > 0.5:
                     print(f"d[{v}, {i}] = {d[v, i].X}", file=f)
     else:
         print("No optimal solution found.", file=f)
-draw_graph(a_vu, partitions, seed=0)
+draw_graph(V, E, partitions, seed=0)
