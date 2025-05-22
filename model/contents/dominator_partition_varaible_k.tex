@@ -4,8 +4,7 @@
 
 \subsection*{Sets \& Parameters}
 \begin{itemize}[label=, noitemsep]
-    \item $V$: set of vertices in the graph, of size $n$
-    \item $a_{vu}$: 1 if vertices $v$ and $u$ are adjacent
+    \item $G=(V,E)$: a graph with vertex set $V$ of size n and edge set $E$
 \end{itemize}
 
 \subsection*{Decision Variables}
@@ -20,11 +19,11 @@
     \min \quad &\sum_{i=1}^{n} y_i &&\text{(minimize the number of blocks used)}\\
     \text{s.t.} \quad
     &\sum_{i=1}^{n} x_{vi} = 1, \quad \forall v \in V &&\text{(each vertex is assigned to one block)}\\
-    &x_{vi} \leq y_i \quad \forall v \in V, i \in \{1, 2, \dots, n\} &&\text{(vertex assigned only if block used)}\\
-    & \sum_{v \in V} x_{vi} \geq y_i \quad \forall i \in \{1, 2, \dots, n\} &&\text{(block used only if it is not empty)}\\
-    &x_{ui} \leq a_{vu} + (1 - d_{vi}) \quad \forall u,v \in V, i \in \{1, 2, \dots, n\} &&\text{(domination condition)}\\
+    &x_{vi} \leq y_i \quad \forall v \in V, i \in V &&\text{(vertex assigned only if block used)}\\
+    & \sum_{v \in V} x_{vi} \geq y_i \quad \forall i \in V &&\text{(block used only if it is not empty)}\\
+    &x_{ui} + d_{vi} \leq 1 \quad \{\forall u, v \in V \mid \{u,v\} \notin E\}, i \in V &&\text{(domination condition)}\\
     &\sum_{i=1}^{n} d_{vi} \geq 1 \quad \forall v \in V &&\text{(each vertex dominates at least one block)}\\
-    & d_{vi} \leq y_i \quad \forall v \in V, i \in \{1, 2, \dots, n\} &&\text{(cannot dominate an empty block)}\\
-    & \sum_{v \in V} x_{vi} \geq \sum_{v \in V} x_{v,i+1} \quad \forall i \in \{1, 2, \dots, n-1\} &&\text{(blocks are used in order)}\\
-    &x_{vi}, y_i, d_{vi} \quad \forall v \in V, i \in \{1, 2, \dots, n\} &&\text{(binary variables)}\\
+    & d_{vi} \leq y_i \quad \forall v \in V, i \in V &&\text{(cannot dominate an empty block)}\\
+    & \sum_{v \in V} x_{vi} \geq \sum_{v \in V} x_{v,i+1} \quad \forall i \in \{1, \dots, n-1\} &&\text{(blocks are used in order)}\\
+    &x_{vi}, y_i, d_{vi} \quad \forall v \in V, i \in V &&\text{(binary variables)}\\
 \end{align*}

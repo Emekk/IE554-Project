@@ -4,9 +4,8 @@
 
 \subsection*{Sets \& Parameters}
 \begin{itemize}[label=, noitemsep]
-    \item $V$: set of vertices in the graph, of size $n$
-    \item $a_{vu}$: 1 if vertices $v$ and $u$ are adjacent
-    \item $k$: number of blocks in the partition
+    \item $G=(V,E)$: a graph with vertex set $V$ and edge set $E$
+    \item $\pi$: dominator partition of size $k$ of $G$
 \end{itemize}
 
 \subsection*{Decision Variables}
@@ -20,9 +19,9 @@
     \min \quad &0 &&\text{(no objective)}\\
     \text{s.t.} \quad
     &\sum_{i=1}^{k} x_{vi} = 1, \quad \forall v \in V &&\text{(each vertex is assigned to one block)}\\
-    &\sum_{v \in V} x_{vi} \geq 1 \quad \forall i \in \{1, 2, \dots, k\} &&\text{(no empty blocks)}\\
-    &x_{ui} \leq a_{vu} + (1 - d_{vi}) \quad \forall u,v \in V, i \in \{1, 2, \dots, k\} &&\text{(domination condition)}\\
+    &\sum_{v \in V} x_{vi} \geq 1 \quad \forall i \in \pi &&\text{(no empty blocks)}\\
+    &x_{ui} + d_{vi} \leq 1 \quad \{\forall u, v \in V \mid \{u,v\} \notin E\}, i \in \pi &&\text{(domination condition)}\\
     &\sum_{i=1}^{k} d_{vi} \geq 1 \quad \forall v \in V &&\text{(each vertex dominates at least one block)}\\
     & \sum_{v \in V} x_{vi} \geq \sum_{v \in V} x_{v,i+1} \quad \forall i \in \{1, 2, \dots, k-1\} &&\text{(blocks are used in order)}\\
-    &x_{vi}, d_{vi} \quad \forall v \in V, i \in \{1, 2, \dots, k\} &&\text{(binary variables)}\\
+    &x_{vi}, d_{vi} \quad \forall v \in V, i \in \pi &&\text{(binary variables)}\\
 \end{align*}
