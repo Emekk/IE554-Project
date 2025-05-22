@@ -8,15 +8,15 @@ from draw_graph import draw_graph
 
 # parameters
 V, E = tree_3
-K = 2
+K = 3
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
 # model
 m = gp.Model('dominator-partition-fixed-k')
 
 # decision variables
-x = m.addVars(V, PI, vtype=GRB.BINARY, name="x")  # x[v, i]
-d = m.addVars(V, PI, vtype=GRB.BINARY, name="d")  # d[v, i]
+x = m.addVars(V, PI, vtype=GRB.CONTINUOUS, lb=0, ub=1, name="x")  # x[v, i]
+d = m.addVars(V, PI, vtype=GRB.CONTINUOUS, lb=0, ub=1, name="d")  # d[v, i]
 
 # objective: minimize number of blocks used
 m.setObjective(0, GRB.MINIMIZE)
@@ -56,15 +56,15 @@ with open(f"{script_dir}/solution.txt", "w", encoding="utf-8") as f:
         for i in PI:
             partition = []
             for v in V:
-                if x[v, i].X > 0.5:
+                if x[v, i].X > 0:
                     print(f"x[{v}, {i}] = {x[v, i].X}", file=f)
                     partition.append(v)
             partitions.append(partition)
         print("---", file=f)
         for v in V:
             for i in PI:
-                if d[v, i].X > 0.5:
+                if d[v, i].X > 0:
                     print(f"d[{v}, {i}] = {d[v, i].X}", file=f)
     else:
         print("No optimal solution found.", file=f)
-draw_graph(V, E, partitions, seed=0)
+draw_graph(V, E, seed=0)
