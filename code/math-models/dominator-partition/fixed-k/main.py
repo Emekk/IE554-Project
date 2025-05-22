@@ -2,13 +2,13 @@ import gurobipy as gp
 from gurobipy import GRB
 import numpy as np
 import os
-from sample_graphs import tree_3
+from sample_graphs import tree4_star
 from draw_graph import draw_graph
 
 
 # parameters
-V, E = tree_3
-K = 3
+V, E = tree4_star
+K = 4
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
 # model

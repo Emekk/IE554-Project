@@ -3,7 +3,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import os
-from sample_graphs import tree_3
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -38,7 +37,3 @@ def draw_graph(V, E, partitions=None, save_path=f"{script_dir}/graph.png", seed=
 
     plt.title("Graph Visualization")
     plt.savefig(save_path, dpi=300)
-
-
-if __name__ == "__main__":
-    draw_graph(tree_3[0], tree_3[1])
