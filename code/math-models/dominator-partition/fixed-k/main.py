@@ -2,21 +2,21 @@ import gurobipy as gp
 from gurobipy import GRB
 import numpy as np
 import os
-from sample_graphs import tree4_star
+from sample_graphs import tree5_fork
 from draw_graph import draw_graph
 
 
 # parameters
-V, E = tree4_star
-K = 4
+V, E = tree5_fork
+K = 5
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
 # model
 m = gp.Model('dominator-partition-fixed-k')
 
 # decision variables
-x = m.addVars(V, PI, vtype=GRB.CONTINUOUS, lb=0, ub=1, name="x")  # x[v, i]
-d = m.addVars(V, PI, vtype=GRB.CONTINUOUS, lb=0, ub=1, name="d")  # d[v, i]
+x = m.addVars(V, PI, vtype=GRB.BINARY, lb=0, ub=1, name="x")  # x[v, i]
+d = m.addVars(V, PI, vtype=GRB.BINARY, lb=0, ub=1, name="d")  # d[v, i]
 
 # objective: minimize number of blocks used
 m.setObjective(0, GRB.MINIMIZE)
@@ -67,4 +67,4 @@ with open(f"{script_dir}/solution.txt", "w", encoding="utf-8") as f:
                     print(f"d[{v}, {i}] = {d[v, i].X}", file=f)
     else:
         print("No optimal solution found.", file=f)
-draw_graph(V, E, seed=0)
+draw_graph(V, E, partitions=partitions, seed=0)
