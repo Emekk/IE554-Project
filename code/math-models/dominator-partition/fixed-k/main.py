@@ -2,13 +2,13 @@ import gurobipy as gp
 from gurobipy import GRB
 import numpy as np
 import os
-from sample_graphs import tree5_fork
+from sample_graphs import tree3
 from draw_graph import draw_graph
 
 
 # parameters
-V, E = tree5_fork
-K = 5
+V, E = tree3
+K = 3
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
 # model
@@ -45,26 +45,33 @@ for i in PI.difference({K}):
     m.addConstr(gp.quicksum(x[v, i] for v in V) >= gp.quicksum(x[v, i + 1] for v in V), name=f"Order_{i}")
 
 # run the model
+m.setParam(GRB.Param.PoolSearchMode, 2)
+m.setParam(GRB.Param.PoolSolutions, 20)
 m.optimize()
 
 # display solution
 script_dir = os.path.dirname(os.path.abspath(__file__))
 partitions = []
 with open(f"{script_dir}/solution.txt", "w", encoding="utf-8") as f:
-    if m.status == GRB.OPTIMAL:
-        # print decision variables
-        for i in PI:
-            partition = []
-            for v in V:
-                if x[v, i].X > 0:
-                    print(f"x[{v}, {i}] = {x[v, i].X}", file=f)
-                    partition.append(v)
-            partitions.append(partition)
-        print("---", file=f)
-        for v in V:
+    if m.SolCount > 0:
+        print(f"Found {m.SolCount} solutions.\n", file=f)
+        for solNum in range(m.SolCount):
+            m.setParam(GRB.Param.SolutionNumber, solNum)
+            print(f"Solution {solNum + 1}", file=f)
+            # print decision variables
             for i in PI:
-                if d[v, i].X > 0:
-                    print(f"d[{v}, {i}] = {d[v, i].X}", file=f)
+                partition = []
+                for v in V:
+                    if x[v, i].Xn > 0:
+                        print(f"x[{v}, {i}] = {x[v, i].Xn}", file=f)
+                        partition.append(v)
+                partitions.append(partition)
+            print("---", file=f)
+            for v in V:
+                for i in PI:
+                    if d[v, i].Xn > 0:
+                        print(f"d[{v}, {i}] = {d[v, i].Xn}", file=f)
+            print("", file=f)
     else:
         print("No optimal solution found.", file=f)
 draw_graph(V, E, partitions=partitions, seed=0)
