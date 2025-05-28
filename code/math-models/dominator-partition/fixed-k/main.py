@@ -2,14 +2,14 @@ import gurobipy as gp
 from gurobipy import GRB
 import numpy as np
 import os
-from sample_graphs import tree3
+from sample_graphs import *
 from draw_graph import draw_graph
 
 
 # parameters
 SEARCH_FESAIBLE = False
-V, E = tree3
-K = 2
+V, E = tree5_path
+K = 5
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
 # model
