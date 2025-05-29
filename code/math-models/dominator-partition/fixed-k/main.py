@@ -9,15 +9,15 @@ from draw_graph import draw_graph
 # parameters
 SEARCH_FESAIBLE = False
 V, E = tree5_path
-K = 5
+K = 2
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
 # model
 m = gp.Model('dominator-partition-fixed-k')
 
 # decision variables
-x = m.addVars(V, PI, vtype=GRB.CONTINUOUS, lb=0, ub=1, name="x")  # x[v, i]
-d = m.addVars(V, PI, vtype=GRB.CONTINUOUS, lb=0, ub=1, name="d")  # d[v, i]
+x = m.addVars(V, PI, vtype=GRB.INTEGER, lb=0, ub=1, name="x")  # x[v, i]
+d = m.addVars(V, PI, vtype=GRB.INTEGER, lb=0, ub=1, name="d")  # d[v, i]
 
 # objective: minimize number of blocks used
 m.setObjective(0, GRB.MINIMIZE)
@@ -94,5 +94,5 @@ with open(f"{script_dir}/solution.txt", "w", encoding="utf-8") as f:
     else:
         print("No feasible solution found.", file=f)
         
-draw_graph(V, E, partitions=partitions, seed=0)
+draw_graph(V, E, partitions=partitions, seed=1)
 m.write("model.lp")
