@@ -1,98 +1,42 @@
-import gurobipy as gp
 from gurobipy import GRB
+from sample_graphs import graphs, closed_neighborhoods
 import numpy as np
-import os
-from sample_graphs import *
+from model import create_and_solve_model, display_results
 from draw_graph import draw_graph
 
 
 # parameters
+GRAPH_NAME = "tree4_path"
 SEARCH_FESAIBLE = False
-V, E = tree5_path
-K = 2
+V, E = graphs[GRAPH_NAME]
+CN = closed_neighborhoods(V, E)
+K = 4
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
-# model
-m = gp.Model('dominator-partition-fixed-k')
+is_integral = True
+is_feasible = True
+seed = 4
+while is_integral: 
+    # generate random weights for x[v, i] and d[v, i]
+    seed += 1
+    np.random.seed(seed)
+    ALPHA = np.random.rand(len(V), len(PI)) * 2 - 1  # Random weights for x[v, i]
+    BETA = np.random.rand(len(V), len(PI)) * 2 - 1  # Random weights for d[v, i]
+    
+    # create and solve model
+    m, x, d = create_and_solve_model(V, E, CN, K, PI, ALPHA, BETA, SEARCH_FESAIBLE).values()
+    
+    if m.status == GRB.INFEASIBLE:
+        print(f">>> Model is infeasible with seed {seed}.")
+        break
 
-# decision variables
-x = m.addVars(V, PI, vtype=GRB.INTEGER, lb=0, ub=1, name="x")  # x[v, i]
-d = m.addVars(V, PI, vtype=GRB.INTEGER, lb=0, ub=1, name="d")  # d[v, i]
+    # check if the solution is integral
+    is_integral = all(x[v, i].X.is_integer() and d[v, i].X.is_integer() for v in V for i in PI)
 
-# objective: minimize number of blocks used
-m.setObjective(0, GRB.MINIMIZE)
+    if seed % 1000 == 0:
+        print(seed)
 
-# each vertex assigned to exactly one block
-for v in V:
-    m.addConstr(gp.quicksum(x[v, i] for i in PI) == 1, name=f"Assign_{v}")
-
-# no empty blocks
-for i in PI:
-    m.addConstr(gp.quicksum(x[v, i] for v in V) >= 1, name=f"NonEmptyBlock_{i}")
-
-# domination condition
-for v in V:
-    for u in V:
-        if ({v, u} not in E) and (v != u):
-            for i in PI:
-                m.addConstr(x[u, i] + d[v, i] <= 1, name=f"Dominate_{v}_{u}_{i}")
-
-# each vertex dominates at least one block
-for v in V:
-    m.addConstr(gp.quicksum(d[v, i] for i in PI) == 1, name=f"DominateBlock_{v}")
-
-# blocks are used in order
-for i in PI.difference({K}):
-    m.addConstr(gp.quicksum(x[v, i] for v in V) >= gp.quicksum(x[v, i + 1] for v in V), name=f"Order_{i}")
-
-# run the model
-if SEARCH_FESAIBLE:
-    m.setParam(GRB.Param.PoolSearchMode, 2)
-    m.setParam(GRB.Param.PoolSolutions, 20)
-m.optimize()
-
-
-# display solution
-script_dir = os.path.dirname(os.path.abspath(__file__))
-partitions = []
-with open(f"{script_dir}/solution.txt", "w", encoding="utf-8") as f:
-    if SEARCH_FESAIBLE:
-        if m.SolCount > 0:
-            print(f"Found {m.SolCount} solutions.\n", file=f)
-            for solNum in range(m.SolCount):
-                m.setParam(GRB.Param.SolutionNumber, solNum)
-                print(f"Solution {solNum + 1}", file=f)
-                # print decision variables
-                for i in PI:
-                    partition = []
-                    for v in V:
-                        if x[v, i].Xn > 0:
-                            print(f"x[{v}, {i}] = {x[v, i].Xn}", file=f)
-                            partition.append(v)
-                    partitions.append(partition)
-                print("---", file=f)
-                for v in V:
-                    for i in PI:
-                        if d[v, i].Xn > 0:
-                            print(f"d[{v}, {i}] = {d[v, i].Xn}", file=f)
-                print("", file=f)
-        else:
-            print("No feasible solution found.", file=f)
-    elif m.status == GRB.OPTIMAL:
-        for i in PI:
-            partition = []
-            for v in V:
-                if x[v, i].X > 0:
-                    print(f"x[{v}, {i}] = {x[v, i].X}", file=f)
-                    partition.append(v)
-            partitions.append(partition)
-        print("---", file=f)
-        for v in V:
-            for i in PI:
-                if d[v, i].X > 0:
-                    print(f"d[{v}, {i}] = {d[v, i].X}", file=f)
-    else:
-        print("No feasible solution found.", file=f)
-        
-draw_graph(V, E, partitions=partitions, seed=1)
-m.write("model.lp")
+if is_feasible and not is_integral:
+    print(f">>> Found non-integral solution with seed {seed}.")
+    display_results(m, x, d, V, E, PI, SEARCH_FESAIBLE, save_path=f"solutions/{GRAPH_NAME}/k={K}/seed={seed}.txt")
+draw_graph(V, E, save_path=f"solutions/{GRAPH_NAME}/graph.png")

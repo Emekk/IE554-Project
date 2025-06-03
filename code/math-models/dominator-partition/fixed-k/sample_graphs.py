@@ -1,3 +1,15 @@
+# Closed neighborhoods function
+def closed_neighborhoods(V, E):
+    neighborhoods = {v: set() for v in V}
+    for u, v in E:
+        neighborhoods[u].add(v)
+        neighborhoods[v].add(u)
+    for v in V:
+        neighborhoods[v].add(v)  # Add self to closed neighborhood
+
+    return neighborhoods
+
+# SAMPLE GRAPHS
 tree3 = (
     {1, 2, 3},
     {
@@ -108,3 +120,18 @@ tree6_threebranch = (
         frozenset({5, 6}),
     },
 )
+
+graphs = {
+    "tree3_path": tree3,
+    "tree4_path": tree4_path,
+    "tree4_star": tree4_star,
+    "tree5_path": tree5_path,
+    "tree5_star": tree5_star,
+    "tree5_fork": tree5_fork,
+    "tree6_star": tree6_star,
+    "tree6_path": tree6_path,
+    "tree6_fork": tree6_fork,
+    "tree6_doublefork": tree6_doublefork,
+    "tree6_lollipop": tree6_lollipop,
+    "tree6_threebranch": tree6_threebranch,
+}
