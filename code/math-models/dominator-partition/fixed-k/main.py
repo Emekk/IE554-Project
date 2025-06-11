@@ -1,16 +1,19 @@
+import dis
 from gurobipy import GRB
-from sample_graphs import graphs, closed_neighborhoods
+from sample_graphs import graphs, closed_neighborhoods, distance2_graph, all_maximal_independent_sets
 import numpy as np
 from model import create_and_solve_model, display_results
 from draw_graph import draw_graph
 
 
 # parameters
-GRAPH_NAME = "tree6_path"
+GRAPH_NAME = "tree5_path"
 SEARCH_FESAIBLE = False
 V, E = graphs[GRAPH_NAME]
 CN = closed_neighborhoods(V, E)
-K = 4
+V, E_sq = distance2_graph(V, E)  # Distance-2 graph
+MaxIndSet = all_maximal_independent_sets(V, E_sq)  # Maximum independent set
+K = 3
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
 is_integral = True

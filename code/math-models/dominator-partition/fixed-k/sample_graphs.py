@@ -9,6 +9,63 @@ def closed_neighborhoods(V, E):
 
     return neighborhoods
 
+# Distance-2 graph function
+def distance2_graph(V, E):
+    # Build adjacency list
+    adj = {v: set() for v in V}
+    for edge in E:
+        u, v = tuple(edge)
+        adj[u].add(v)
+        adj[v].add(u)
+
+    # Construct edges of the square graph
+    E2 = set()
+    for u in V:
+        # Distance-1 neighbors
+        reachable = set(adj[u])
+        # Add distance-2 neighbors
+        for w in adj[u]:
+            reachable |= adj[w]
+        # Remove self if present
+        reachable.discard(u)
+        # Add edge for each reachable v
+        for v in reachable:
+            E2.add(frozenset({u, v}))
+
+    return V, E2
+
+import itertools
+
+# Maximal independent sets function
+def all_maximal_independent_sets(V, E):
+
+    def is_independent(subset):
+        # Kümedeki hiçbir iki düğüm arasında kenar olmamalı
+        for u, v in itertools.combinations(subset, 2):
+            if frozenset({u, v}) in E:
+                return False
+        return True
+
+    maximal_sets = []
+    # Tüm alt kümeleri dolaş
+    for r in range(len(V) + 1):
+        for comb in itertools.combinations(V, r):
+            S = set(comb)
+            if not is_independent(S):
+                continue
+            # Maximal mi? Yani S'ye V\S'den hiçbir düğüm eklenemez
+            # (eklenirse bağımsızlık bozulur)
+            extendable = False
+            for v in V - S:
+                # v'yi eklediğimizde yine bağımsız mı kontrol et
+                if all(frozenset({v, w}) not in E for w in S):
+                    extendable = True
+                    break
+            if not extendable:
+                maximal_sets.append(S)
+
+    return maximal_sets
+
 # SAMPLE GRAPHS
 tree3 = (
     {1, 2, 3},

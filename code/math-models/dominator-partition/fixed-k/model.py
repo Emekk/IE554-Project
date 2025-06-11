@@ -45,11 +45,17 @@ def create_and_solve_model(V, E, CN, K, PI, ALPHA, BETA, SEARCH_FESAIBLE=False):
         m.addConstr(gp.quicksum(x[v, i] for v in V) >= gp.quicksum(x[v, i + 1] for v in V), name=f"Order_{i}")
 
     # VALID INEQUALITIES
-    m.addConstr(gp.quicksum(x[v, 1] for v in V) >= np.ceil(len(V)/K), name="Valid_1")
-    m.addConstr(gp.quicksum(x[v, K] for v in V) <= np.floor(len(V)/K), name="Valid_2")
+    m.addConstr(gp.quicksum(x[v, 1] for v in V) >= np.ceil(len(V)/K), name="Valid_Min_Assignment1")
+    #m.addConstr(gp.quicksum(x[v, K] for v in V) <= np.floor(len(V)/K), name="Valid_2") # daha kapsamlısı aşağıya eklendi
+    for i in PI:
+        m.addConstr(gp.quicksum(x[v, i] for v in V) <= np.floor((len(V)-K+i)/i), name=f"Valid_Max_Assignment_{i}")
     for v in V:
         for i in PI:
             m.addConstr(d[v, i] >= gp.quicksum(x[u, i] for u in CN[v]) - (len(CN[v])- 1), name=f"Valid_Dominate_{v}_{i}")
+    for v in V:
+        for i in PI:
+            m.addConstr(d[v, i] <= gp.quicksum(x[u, i] for u in CN[v]), name=f"Valid_Dominate_Upper_{v}_{i}")
+    
 
     # run the model
     if SEARCH_FESAIBLE:
