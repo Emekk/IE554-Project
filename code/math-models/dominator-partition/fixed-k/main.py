@@ -6,7 +6,7 @@ from draw_graph import draw_graph
 
 
 # parameters
-GRAPH_NAME = "tree4_path"
+GRAPH_NAME = "tree6_path"
 SEARCH_FESAIBLE = False
 V, E = graphs[GRAPH_NAME]
 CN = closed_neighborhoods(V, E)
@@ -15,7 +15,7 @@ PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
 is_integral = True
 is_feasible = True
-seed = 4
+seed = 0
 while is_integral: 
     # generate random weights for x[v, i] and d[v, i]
     seed += 1
