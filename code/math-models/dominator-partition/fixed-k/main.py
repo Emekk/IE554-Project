@@ -13,7 +13,7 @@ V, E = graphs[GRAPH_NAME]
 CN = closed_neighborhoods(V, E)
 V, E2 = distance2_graph(V, E)  # Distance-2 graph
 MAXIMAL_INDEPENDENT_SETS = all_maximal_independent_sets(V, E2)  # all maximal independent sets
-K = 2
+K = 5
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
 
 
