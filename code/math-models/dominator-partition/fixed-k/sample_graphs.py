@@ -1,3 +1,6 @@
+import itertools
+
+
 # Closed neighborhoods function
 def closed_neighborhoods(V, E):
     neighborhoods = {v: set() for v in V}
@@ -34,30 +37,25 @@ def distance2_graph(V, E):
 
     return V, E2
 
-import itertools
-
 # Maximal independent sets function
 def all_maximal_independent_sets(V, E):
 
     def is_independent(subset):
-        # Kümedeki hiçbir iki düğüm arasında kenar olmamalı
         for u, v in itertools.combinations(subset, 2):
             if frozenset({u, v}) in E:
                 return False
         return True
 
     maximal_sets = []
-    # Tüm alt kümeleri dolaş
-    for r in range(len(V) + 1):
+    # Iterate over all subsets of V
+    for r in range(2, len(V) + 1):
         for comb in itertools.combinations(V, r):
             S = set(comb)
             if not is_independent(S):
                 continue
-            # Maximal mi? Yani S'ye V\S'den hiçbir düğüm eklenemez
-            # (eklenirse bağımsızlık bozulur)
+            # Check if S is maximal
             extendable = False
             for v in V - S:
-                # v'yi eklediğimizde yine bağımsız mı kontrol et
                 if all(frozenset({v, w}) not in E for w in S):
                     extendable = True
                     break
@@ -178,6 +176,18 @@ tree6_threebranch = (
     },
 )
 
+tree7_path = (
+    {1, 2, 3, 4, 5, 6, 7},
+    {
+        frozenset({1, 2}),
+        frozenset({2, 3}),
+        frozenset({3, 4}),
+        frozenset({4, 5}),
+        frozenset({5, 6}),
+        frozenset({6, 7}),
+    },
+)
+
 graphs = {
     "tree3_path": tree3,
     "tree4_path": tree4_path,
@@ -191,4 +201,5 @@ graphs = {
     "tree6_doublefork": tree6_doublefork,
     "tree6_lollipop": tree6_lollipop,
     "tree6_threebranch": tree6_threebranch,
+    "tree7_path": tree7_path,
 }

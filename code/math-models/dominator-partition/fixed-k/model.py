@@ -5,7 +5,7 @@ from draw_graph import draw_graph
 import os
 
 
-def create_and_solve_model(V, E, CN, K, PI, ALPHA, BETA, SEARCH_FESAIBLE=False):
+def create_and_solve_model(V, E, CN, MAXIMAL_INDEPENDENT_SETS, K, PI, ALPHA, BETA, SEARCH_FESAIBLE=False):
     # model
     m = gp.Model('dominator-partition-fixed-k')
     m.setParam('OutputFlag', 0)
@@ -55,7 +55,9 @@ def create_and_solve_model(V, E, CN, K, PI, ALPHA, BETA, SEARCH_FESAIBLE=False):
     for v in V:
         for i in PI:
             m.addConstr(d[v, i] <= gp.quicksum(x[u, i] for u in CN[v]), name=f"Valid_Dominate_Upper_{v}_{i}")
-    
+    for i in PI:
+        for S in MAXIMAL_INDEPENDENT_SETS:
+            m.addConstr(gp.quicksum(d[v, i] for v in S) <= 1, name=f"Valid_Indep_{i}_{S}")
 
     # run the model
     if SEARCH_FESAIBLE:
