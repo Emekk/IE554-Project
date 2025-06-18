@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import os
+from sample_graphs import build_random_graph
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -36,4 +37,11 @@ def draw_graph(V, E, partitions=None, save_path=f"{script_dir}/graph.png", seed=
         nx.draw(G, pos, with_labels=True, node_color='skyblue', edge_color='gray', node_size=1000, font_size=16)
 
     plt.title("Graph Visualization")
+    plt.show()
     plt.savefig(save_path, dpi=300)
+
+
+if __name__ == "__main__":
+    # Example usage
+    V, E = build_random_graph(20, 0.5)  # Random graph with 10 vertices and edge probability 0.3
+    draw_graph(V, E, save_path=f"{script_dir}/example_graph.png")

@@ -1,4 +1,5 @@
 import itertools
+import numpy as np
 
 
 # Closed neighborhoods function
@@ -63,6 +64,21 @@ def all_maximal_independent_sets(V, E):
                 maximal_sets.append(S)
 
     return maximal_sets
+
+def build_random_graph(N, p, seed=0):
+    """
+    Generate a random graph with N vertices and edge probability p.
+    Returns a tuple (V, E) where V is the set of vertices and E is the set of edges.
+    """
+    np.random.seed(seed)
+    V = set(range(1, N + 1))
+    E = set()
+    for u in range(1, N + 1):
+        for v in range(u + 1, N + 1):
+            if np.random.rand() < p:
+                E.add(frozenset({u, v}))
+    return V, E
+
 
 # SAMPLE GRAPHS
 tree3 = (

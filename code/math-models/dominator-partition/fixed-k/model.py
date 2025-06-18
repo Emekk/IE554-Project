@@ -5,21 +5,23 @@ from draw_graph import draw_graph
 import os
 
 
-def create_and_solve_model(V, E, CN, MAXIMAL_INDEPENDENT_SETS, K, PI, ALPHA, BETA, SEARCH_FESAIBLE=False):
+def create_and_solve_model(V, E, CN, MAXIMAL_INDEPENDENT_SETS, K, PI, SEARCH_FESAIBLE=False, VARIABLE_TYPE=GRB.BINARY, ALPHA=None, BETA=None):
     # model
     m = gp.Model('dominator-partition-fixed-k')
-    m.setParam('OutputFlag', 0)
-
+    
     # decision variables
-    x = m.addVars(V, PI, vtype=GRB.CONTINUOUS, lb=0, ub=1, name="x")  # x[v, i]
-    d = m.addVars(V, PI, vtype=GRB.CONTINUOUS, lb=0, ub=1, name="d")  # d[v, i]
+    x = m.addVars(V, PI, vtype=VARIABLE_TYPE, lb=0, ub=1, name="x")  # x[v, i]
+    d = m.addVars(V, PI, vtype=VARIABLE_TYPE, lb=0, ub=1, name="d")  # d[v, i]
 
     # objective: minimize number of blocks used
-    m.setObjective(
-        gp.quicksum(ALPHA[v-1, i-1] * x[v, i] for v in V for i in PI) +
-        gp.quicksum(BETA[v-1, i-1] * d[v, i] for v in V for i in PI),
-        GRB.MINIMIZE
-    )
+    if ALPHA is not None and BETA is not None:
+        m.setObjective(
+            gp.quicksum(ALPHA[v-1, i-1] * x[v, i] for v in V for i in PI) +
+            gp.quicksum(BETA[v-1, i-1] * d[v, i] for v in V for i in PI),
+            GRB.MINIMIZE
+        )
+    else:
+        m.setObjective(0, GRB.MINIMIZE)
 
     # each vertex assigned to exactly one block
     for v in V:
@@ -67,7 +69,7 @@ def create_and_solve_model(V, E, CN, MAXIMAL_INDEPENDENT_SETS, K, PI, ALPHA, BET
 
     return {"model": m, "x": x, "d": d}
 
-def display_results(m, x, d, V, E, PI, search_feasible, save_path, graph_path=None, partitioning=None):
+def display_results(m, x, d, V, E, PI, search_feasible, save_path, graph_path=None, partitioning=False):
     partitions = []
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     with open(f"{save_path}", "w", encoding="utf-8") as f:
