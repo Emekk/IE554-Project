@@ -5,32 +5,34 @@ from model import create_and_solve_model, display_results
 import time
 
 
-t = time.time()
 # parameters
 SEED = 0
-N = 25  # Number of nodes
-P = 0.5  # Probability of edge creation
+N = 300  # Number of nodes
+P = 0.3  # Probability of edge creation
+K = max(int(N - np.ceil((P * (N**2 - N) / 2))**(0.6)), int(N**(0.5)))
 GRAPH_NAME = f"random_graph{N}_{P}"
 SEARCH_FESAIBLE = False
 V, E = build_random_graph(N, P, seed=SEED)
 CN = closed_neighborhoods(V, E)
-V, E2 = distance2_graph(V, E)  # Distance-2 graph
-MAXIMAL_INDEPENDENT_SETS = all_maximal_independent_sets(V, E2)  # all maximal independent sets
-print(f"all_maximal_independent_sets took {time.time() - t:.2f} seconds")
-K = 10
+#V, E2 = distance2_graph(V, E)  # Distance-2 graph
+#MAXIMAL_INDEPENDENT_SETS = all_maximal_independent_sets(V, E2)  # all maximal independent sets
+#print(f"all_maximal_independent_sets took {time.time() - t:.2f} seconds")
 PI = {i for i in range(1, K+1)}  # Number of blocks (fixed)
+print(f"N={N}, P={P}, K={K}")
 
 print(f">>> Graph: {GRAPH_NAME}, K: {K} - Model starting...")
+t = time.time()
 # RUN THE MODEL ONE TIME
 m, x, d = create_and_solve_model(
     V=V,
     E=E,
     CN=CN,
-    MAXIMAL_INDEPENDENT_SETS=MAXIMAL_INDEPENDENT_SETS,
+    MAXIMAL_INDEPENDENT_SETS=None,
     K=K,
     PI=PI,
     SEARCH_FESAIBLE=SEARCH_FESAIBLE
 ).values()
+print(f"Model took: {time.time() - t:,.2f}")
 
 display_results(m, x, d, V, E, PI, SEARCH_FESAIBLE, save_path=f"solutions/{GRAPH_NAME}/k={K}/seed={SEED}.txt")
 

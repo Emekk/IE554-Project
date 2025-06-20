@@ -65,7 +65,7 @@ def all_maximal_independent_sets(V, E):
 
     return maximal_sets
 
-def build_random_graph(N, p, seed=0):
+def build_random_graph(N, p, connected=True, seed=0):
     """
     Generate a random graph with N vertices and edge probability p.
     Returns a tuple (V, E) where V is the set of vertices and E is the set of edges.
@@ -77,6 +77,42 @@ def build_random_graph(N, p, seed=0):
         for v in range(u + 1, N + 1):
             if np.random.rand() < p:
                 E.add(frozenset({u, v}))
+    
+    # ensure the graph is a connected graph if required
+    if connected:
+        # Union-Find (Disjoint Set) implementation
+        parent = {v: v for v in V}
+
+        def find(v):
+            while parent[v] != v:
+                parent[v] = parent[parent[v]]  # Path compression
+                v = parent[v]
+            return v
+
+        def union(u, v):
+            root_u = find(u)
+            root_v = find(v)
+            if root_u != root_v:
+                parent[root_v] = root_u
+
+        # Initially union all existing edges
+        for edge in E:
+            u, v = tuple(edge)
+            union(u, v)
+
+        # Connect disconnected components
+        components = {}
+        for v in V:
+            root = find(v)
+            components.setdefault(root, []).append(v)
+
+        component_roots = list(components.keys())
+        for i in range(len(component_roots) - 1):
+            u = components[component_roots[i]][0]
+            v = components[component_roots[i + 1]][0]
+            E.add(frozenset({u, v}))
+            union(u, v)  # Update the structure as we connect components
+
     return V, E
 
 

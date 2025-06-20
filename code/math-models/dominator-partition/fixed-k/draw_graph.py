@@ -43,5 +43,5 @@ def draw_graph(V, E, partitions=None, save_path=f"{script_dir}/graph.png", seed=
 
 if __name__ == "__main__":
     # Example usage
-    V, E = build_random_graph(20, 0.5)  # Random graph with 10 vertices and edge probability 0.3
+    V, E = build_random_graph(20, 0.4)  # Random graph with 10 vertices and edge probability 0.3
     draw_graph(V, E, save_path=f"{script_dir}/example_graph.png")
