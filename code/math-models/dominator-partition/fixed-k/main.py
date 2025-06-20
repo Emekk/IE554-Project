@@ -1,5 +1,5 @@
 from gurobipy import GRB
-from sample_graphs import graphs, closed_neighborhoods, distance2_graph, all_maximal_independent_sets, build_random_graph
+from sample_graphs import graphs, closed_neighborhoods, build_random_graph
 import numpy as np
 from model import create_and_solve_model, display_results
 import time
@@ -7,9 +7,10 @@ import time
 
 # parameters
 SEED = 0
-N = 300  # Number of nodes
-P = 0.3  # Probability of edge creation
+N = 320  # Number of nodes
+P = 0.2  # Probability of edge creation
 K = max(int(N - np.ceil((P * (N**2 - N) / 2))**(0.6)), int(N**(0.5)))
+K = K - (K % 5)
 GRAPH_NAME = f"random_graph{N}_{P}"
 SEARCH_FESAIBLE = False
 V, E = build_random_graph(N, P, seed=SEED)

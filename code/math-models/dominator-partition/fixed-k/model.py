@@ -8,7 +8,11 @@ import os
 def create_and_solve_model(V, E, CN, MAXIMAL_INDEPENDENT_SETS, K, PI, SEARCH_FESAIBLE=False, VARIABLE_TYPE=GRB.BINARY, ALPHA=None, BETA=None):
     # model
     m = gp.Model('dominator-partition-fixed-k')
-    
+
+    # write to ssd instead of ram to prevent out of memory error
+    m.setParam('NodefileStart', 10_240)
+    m.setParam("NodefileDir", "C:\\Temp")
+
     # decision variables
     x = m.addVars(V, PI, vtype=VARIABLE_TYPE, lb=0, ub=1, name="x")  # x[v, i]
     d = m.addVars(V, PI, vtype=VARIABLE_TYPE, lb=0, ub=1, name="d")  # d[v, i]
@@ -47,18 +51,15 @@ def create_and_solve_model(V, E, CN, MAXIMAL_INDEPENDENT_SETS, K, PI, SEARCH_FES
         m.addConstr(gp.quicksum(x[v, i] for v in V) >= gp.quicksum(x[v, i + 1] for v in V), name=f"Order_{i}")
 
     # VALID INEQUALITIES
-    m.addConstr(gp.quicksum(x[v, 1] for v in V) >= np.ceil(len(V)/K), name="Valid_Min_Assignment1")
-    for i in PI:
-        m.addConstr(gp.quicksum(x[v, i] for v in V) <= np.floor((len(V)-K+i)/i), name=f"Valid_Max_Assignment_{i}")
-    for v in V:
-        for i in PI:
-            m.addConstr(d[v, i] >= gp.quicksum(x[u, i] for u in CN[v]) - (len(CN[v])- 1), name=f"Valid_Dominate_{v}_{i}")
-    for v in V:
-        for i in PI:
-            m.addConstr(d[v, i] <= gp.quicksum(x[u, i] for u in CN[v]), name=f"Valid_Dominate_Upper_{v}_{i}")
+    # m.addConstr(gp.quicksum(x[v, 1] for v in V) >= np.ceil(len(V)/K), name="Valid_Min_Assignment1")
     # for i in PI:
-    #     for S in MAXIMAL_INDEPENDENT_SETS:
-    #         m.addConstr(gp.quicksum(d[v, i] for v in S) <= 1, name=f"Valid_Indep_{i}_{S}")
+    #     m.addConstr(gp.quicksum(x[v, i] for v in V) <= np.floor((len(V)-K+i)/i), name=f"Valid_Max_Assignment_{i}")
+    # # for v in V:
+    # #     for i in PI:
+    # #         m.addConstr(d[v, i] >= gp.quicksum(x[u, i] for u in CN[v]) - (len(CN[v])- 1), name=f"Valid_Dominate_{v}_{i}")
+    # # for v in V:
+    # #     for i in PI:
+    # #         m.addConstr(d[v, i] <= gp.quicksum(x[u, i] for u in CN[v]), name=f"Valid_Dominate_Upper_{v}_{i}")
 
     # run the model
     if SEARCH_FESAIBLE:

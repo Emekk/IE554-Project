@@ -1,1 +1,11 @@
 \section{Introduction}
+\label{sec:introduction}
+
+
+\section{Introduction}
+
+Graph partitioning problems arise in various applications, including parallel computing, VLSI design, social network analysis, and data clustering. One such problem is the \textit{Dominator Partition Problem} (DPP), which involves partitioning the vertex set of a graph into $k$ disjoint subsets such that each vertex is dominated within its subset. A vertex $u$ is said to dominate a vertex $v$ if $u = v$ or $(u,v)$ is an edge in the graph.
+
+This study focuses on modeling the DPP as an integer programming problem and enhancing its solvability using valid inequalities. Integer programming formulations for partitioning problems often suffer from large solution spaces and weak linear relaxations, which lead to high computational times. Introducing valid inequalities can tighten the linear relaxation, potentially reducing the solution time and helping to describe the convex hull of feasible integer solutions for fixed values of $k$.
+
+The goal of this work is twofold: first, to provide a formal integer programming formulation of the DPP, and second, to develop and analyze valid inequalities that improve solver performance and contribute to the polyhedral understanding of the problem. Computational experiments are conducted to evaluate the impact of these inequalities on solution time and optimality gaps.
